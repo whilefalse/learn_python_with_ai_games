@@ -11,6 +11,9 @@ class Game(object):
         self.player1.marker = 'O'
         self.player2.marker = 'X'
 
+        self.player1.games_won = 0
+        self.player2.games_won = 0
+
         self.next_player = player1
 
     def player_to_play(self):
@@ -23,11 +26,19 @@ class Game(object):
 
         return to_play
 
+    def player_from_marker(self, marker):
+        if self.player1.marker == marker:
+            return self.player1
+        else:
+            return self.player2
+
     def game_ended(self):
         won = self.board.someone_has_one()
         if won:
+            player_won = self.player_from_marker(won)
+            player_won.games_won += 1
             print
-            print "%s WON!" % won
+            print "%s WON!" % player_won.name
             return True
 
         if self.board.full():
@@ -40,10 +51,13 @@ class Game(object):
     def print_game(self):
         print chr(27) + "[2J"
 
+        o = self.player_from_marker('O')
+        x = self.player_from_marker('X')
+
         print "Game %s/5" % (self.game_run + 1)
         print
-        print "O: %s" % self.player1.name
-        print "X: %s" % self.player2.name
+        print "O: %s (%s)" % (o.name, o.games_won)
+        print "X: %s (%s)" % (x.name, x.games_won)
         print
 
         self.board.print_board()
@@ -66,3 +80,15 @@ class Game(object):
 
                 self.print_game()
             sleep(2)
+            self.player1.marker, self.player2.marker = self.player2.marker, self.player1.marker
+            self.next_player = self.player_from_marker('O')
+
+        if self.player1.games_won > self.player2.games_won:
+            print "%s WON %s to %s." % (self.player1.name, self.player1.games_won, self.player2.games_won)
+        elif self.player2.games_won > self.player1.games_won:
+            print "%s WON %s to %s." % (self.player2.name, self.player2.games_won, self.player1.games_won)
+        else:
+            print "%s and %s tied." % (self.player1.name, self.player2.name)
+
+
+
