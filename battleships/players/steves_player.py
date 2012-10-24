@@ -2,7 +2,7 @@ import random
 
 class Player(object):
     def __init__(self):
-        self.name = 'Clever Player'
+        self.name = 'Steve\'s Player'
 
     def place_ships(self):
         self.queue = []
