@@ -1,0 +1,58 @@
+h1. Learn Python With AI Games
+
+This is a little experiment with teaching OO in Python through writing basic AI for simple games.
+
+h2. Contents
+
+- Tic Tac Toe
+- Battleships
+
+h2. Running a game
+
+CD into the game directory, e.g.:
+
+    cd battleships
+
+Then run:
+
+    python battleships.py players/path_to_player_1.py players/path_to_player_2.py
+
+For TicTacToe, replace battleships.py with tictactoe.py.
+
+h2. Writing Players
+
+Each player has a simple interface, dependent on the game. To create a player:
+
+1. Add a file called my_player_name.py to the players/ directory of the game.
+2. In that file, define a class called Player
+3. The Player class should have an instance variable called name, which gives a description of the player.
+
+h3. TicTacToe
+
+For TicTacToe, the player should implement the following interface:
+
+- A single method *place_piece*.
+- This takes an argument which is a list of length 10, describing the board state.
+- The values in the list run from left to right, top to bottom, e.g. the 3rd value in the list represents the top right square, the fourth value the middle left square, and the 9th value the bottom right square.
+- A value is either ' ' meaning the square is empty, 'O' meaning it has an O in it, or 'X' meaning it has an X in it.
+- The marker of the current player (O or X) can be accessed via "self.marker".
+
+h3. Battleships
+
+For Battleships, the player should implement the following interface:
+
+h4. place_ships()
+
+- This should return an array of arrays, describing the ship placement.
+- Each array represents a ship, and is of the form [length, x, y, orientation]
+- Where length is from 1 to 4, x is from 0 to 9, y is from 0 to 9 and orientation is 'down' or 'across'
+- You must have 1 ship of length 4, 2 of length 3, 3 of length 2 and 4 of length 1, totalling 10 ships
+- If your ships fall outside the boundaries or overlap, an exception will be thrown
+
+h4. take_shot(board, ships)
+
+- This takes two arguments.
+- board is a two dimensional array, the first index is the x co-ordinate, the second is the y co-ordinate.
+- The values in "board" are either '?' for an unknown square, 'x' for a hit, or 'o' for a miss.
+- ships is an array of integers, specifying which of your opponents ships are still left e.g. [4,2,1,1] means your opponent has one 4 length ship, one 2 length ship and 2 one length ships left. Even if the ships are hit, if they are not completely sunk they will appear in this array.
+- The method should return an array of the form [x,y], which are the co-ordinates of your next move.
