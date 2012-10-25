@@ -5,19 +5,27 @@ import unittest
 from players.stupid_player import Player
 
 class StupidPlayerTests(unittest.TestCase):
-    def test_name_is_stupid_player(self):
-        player = Player()
+    def setUp(self):
+        self.player = Player()
+        self.marker = 'X'
 
-        self.assertEqual(player.name, "Stupid Player")
+    def test_name_is_stupid_player(self):
+        self.assertEqual(self.player.name, "Stupid Player")
 
     def test_place_piece_gives_random_answer(self):
-        player = Player()
-
-        move = player.place_piece([
+        move = self.player.place_piece([
             ' ', ' ', ' ',
             ' ', ' ', ' ',
             ' ', ' ', ' '])
 
         self.assertIn(move, range(9))
+
+    def test_place_piece_never_chooses_occupied_space(self):
+        move = self.player.place_piece([
+            'X', 'X', 'O',
+            'O', 'X', ' ',
+            'O', 'X', 'O'])
+
+        self.assertEqual(move, 5)
 
 unittest.main()
