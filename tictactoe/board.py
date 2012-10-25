@@ -29,6 +29,7 @@ class Board(object):
 
         for x,y,z in winning_combinations:
             if self.board[x] == self.board[y] == self.board[z] and self.board[x] != ' ':
-                return self.board[x]
+                won = self.board[x]
+                return won
 
         return False

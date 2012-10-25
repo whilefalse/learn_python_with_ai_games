@@ -38,7 +38,7 @@ class Game(object):
             player_won = self.player_from_marker(won)
             player_won.games_won += 1
             print
-            print "%s WON!" % player_won.name
+            print "%s: %s WON!" % (player_won.marker, player_won.name)
             return True
 
         if self.board.full():
