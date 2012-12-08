@@ -1,6 +1,7 @@
 from time import sleep
 from sea import Sea
 from validation_error import ValidationError
+from termcolor import colored
 import sys
 
 class Game(object):
@@ -24,12 +25,19 @@ class Game(object):
             print e.message
             sys.exit()
 
-    def print_game(self):
+    def print_game(self, last_won=None):
         print chr(27) + "[2J"
-        print "%s (won %s)" % (self.player1.name, self.player1.games_won)
+
+        star = colored(' WINNER!!', 'red') if last_won == self.player1 else ''
+
+        print colored(self.player1.name, 'blue', attrs=['bold']) +\
+        colored(" (%s/5)" % (self.player1.games_won), 'yellow') + star
+
         self.player1.sea.print_sea()
+        star = colored(' WINNER!!', 'red') if last_won == self.player2 else ''
         print
-        print "%s (won %s)" % (self.player2.name, self.player2.games_won)
+        print colored(self.player2.name, 'green', attrs=['bold']) +\
+        colored(" (%s/5)" % (self.player2.games_won), 'yellow') + star
         self.player2.sea.print_sea()
 
     def next_player(self):
@@ -57,18 +65,16 @@ class Game(object):
 
             if self.player1.sea.all_sunk():
                 self.player2.games_won += 1
-                self.print_game()
-                print "%s WON!" % self.player2.name
+                self.print_game(self.player2)
             if self.player2.sea.all_sunk():
                 self.player1.games_won += 1
-                self.print_game()
-                print "%s WON!" % self.player1.name
+                self.print_game(self.player1)
 
             if i < 4:
                 sleep(2)
             self.player1, self.player2 = self.player2, self.player1
 
         if self.player1.games_won > self.player2.games_won:
-            print "%s WON %s to %s" % (self.player1.name, self.player1.games_won, self.player2.games_won)
+            print "%s WON %s to %s" % (colored(self.player1.name, 'blue', attrs=['bold']), colored(self.player1.games_won, 'blue'), colored(self.player2.games_won, 'green'))
         else:
-            print "%s WON %s to %s" % (self.player2.name, self.player2.games_won, self.player1.games_won)
+            print "%s WON %s to %s" % (colored(self.player2.name, 'green', attrs=['bold']), colored(self.player2.games_won, 'green'), colored(self.player1.games_won, 'blue'))

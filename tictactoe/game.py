@@ -1,5 +1,6 @@
 from board import Board
 from time import sleep
+from termcolor import colored
 
 class Game(object):
     name = 'Tic Tac Toe'
@@ -37,27 +38,29 @@ class Game(object):
         if won:
             player_won = self.player_from_marker(won)
             player_won.games_won += 1
-            print
-            print "%s: %s WON!" % (player_won.marker, player_won.name)
+            self.print_game(player_won)
             return True
 
         if self.board.full():
-            print
-            print "STALEMATE!"
+            self.print_game('none')
             return True
 
         return False
 
-    def print_game(self):
+    def print_game(self, last_won=None):
         print chr(27) + "[2J"
 
         o = self.player_from_marker('O')
         x = self.player_from_marker('X')
 
-        print "Game %s/5" % (self.game_run + 1)
-        print
-        print "O: %s (%s)" % (o.name, o.games_won)
-        print "X: %s (%s)" % (x.name, x.games_won)
+        o_won = colored('WINNER!!', 'red', attrs=['bold']) if last_won == o else ''
+        x_won = colored('WINNER!!', 'red', attrs=['bold']) if last_won == x else ''
+
+        if last_won == 'none':
+            o_won = x_won = colored('STALEMATE!!', 'red', attrs=['bold'])
+
+        print colored('O:', 'green', attrs=['bold']) + " %s %s %s" % (colored(o.name, 'green', attrs=['bold']), colored('(%s)' % o.games_won, 'yellow'), o_won)
+        print colored('X:', 'red', attrs=['bold']) + " %s %s %s" % (colored(x.name, 'red', attrs=['bold']), colored('(%s)' % x.games_won, 'yellow'), x_won)
         print
 
         self.board.print_board()
@@ -83,6 +86,7 @@ class Game(object):
             self.player1.marker, self.player2.marker = self.player2.marker, self.player1.marker
             self.next_player = self.player_from_marker('O')
 
+        print
         if self.player1.games_won > self.player2.games_won:
             print "%s WON %s to %s." % (self.player1.name, self.player1.games_won, self.player2.games_won)
         elif self.player2.games_won > self.player1.games_won:

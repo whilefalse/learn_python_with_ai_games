@@ -7,15 +7,27 @@ h2. Contents
 - Tic Tac Toe
 - Battleships
 
+h2. Installation
+
+The games use the @termcolor@ package. To install:
+
+<pre><code>
+    sudo easy_install termcolor
+</code></pre>
+
 h2. Running a game
 
 CD into the game directory, e.g.:
 
+<pre><code>
     cd battleships
+</code></pre>
 
 Then run:
 
+<pre><code>
     python battleships.py players/path_to_player_1.py players/path_to_player_2.py
+</code></pre>
 
 For TicTacToe, replace battleships.py with tictactoe.py.
 

@@ -1,12 +1,13 @@
 # encoding: utf-8
 from validation_error import ValidationError
 from ship import Ship
+from termcolor import colored
 
 class Sea(object):
-    sea_char = u'_'
-    ship_char = u"▓"
-    sunk_char = u'╳'
-    miss_char = u'.'
+    sea_char = colored(u'*', 'blue')
+    ship_char = colored(u"▓", 'yellow')
+    sunk_char = colored(u'╳', 'green')
+    miss_char = colored(u'*', 'red')
 
     def __init__(self, ship_placements):
         self.grid = [[self.__class__.sea_char for x in range(10)] for y in range(10)]
