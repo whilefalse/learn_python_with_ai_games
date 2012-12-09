@@ -19,4 +19,4 @@ class Player(object):
                 ]
 
     def take_shot(self, board, ships):
-        return [random.randint(0, 8), random.randint(0,8)]
+        return [random.randint(0, 9), random.randint(0,9)]
