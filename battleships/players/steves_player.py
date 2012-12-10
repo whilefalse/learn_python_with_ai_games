@@ -40,7 +40,9 @@ class Player(object):
                 move = None
 
         if not move:
-            move = (random.randint(0, 8), random.randint(0,8))
+            move = (random.randint(0, 9), random.randint(0, 9))
+            while board[move[0]][move[1]] != '?':
+                move = (random.randint(0, 9), random.randint(0, 9))
 
         self.last_shot = move
         self.seen.add(move)

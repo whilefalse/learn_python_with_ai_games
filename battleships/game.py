@@ -18,23 +18,38 @@ class Game(object):
 
 
     def start_game(self):
+        self.player1.sea = Sea.blank()
+        self.player2.sea = Sea.blank()
+
         try:
+            self.player1.sea = Sea.blank()
             self.player1.sea = Sea(self.player1.place_ships())
+        except ValidationError as e:
+            self.player2.games_won += 1
+            self.print_game(self.player2, e.message)
+            return False
+
+        try:
             self.player2.sea = Sea(self.player2.place_ships())
         except ValidationError as e:
-            print e.message
-            sys.exit()
+            self.player1.games_won += 1
+            self.print_game(self.player1, e.message)
+            return False
 
-    def print_game(self, last_won=None):
+        return True
+
+    def print_game(self, last_won=None, error=None):
         print chr(27) + "[2J"
 
-        star = colored(' WINNER!!', 'red') if last_won == self.player1 else ''
+        star = colored(' WINNER!!', 'green') if last_won == self.player1 else ''
+        star = colored(' ERRORED! ' + error, 'red') if last_won == self.player2 and error else star
 
         print colored(self.player1.name, 'blue', attrs=['bold']) +\
         colored(" (%s/5)" % (self.player1.games_won), 'yellow') + star
 
         self.player1.sea.print_sea()
-        star = colored(' WINNER!!', 'red') if last_won == self.player2 else ''
+        star = colored(' WINNER!!', 'green') if last_won == self.player2 else ''
+        star = colored(' ERRORED! ' + error, 'red') if last_won == self.player1 and error else star
         print
         print colored(self.player2.name, 'green', attrs=['bold']) +\
         colored(" (%s/5)" % (self.player2.games_won), 'yellow') + star
@@ -50,25 +65,31 @@ class Game(object):
 
     def play(self):
         for i in range(5):
-            self.start_game()
-            self.print_game()
-
-            while not self.player1.sea.all_sunk() and not self.player2.sea.all_sunk():
-                player = self.next_player()
-                other_player = self.player_turn
-                shot = player.take_shot(other_player.sea.present_to_player(), other_player.sea.ship_lengths_remaining())
-
-                other_player.sea.take_shot(shot)
-
+            error = None
+            if self.start_game():
                 self.print_game()
-                sleep(0.1)
+                player = None
 
-            if self.player1.sea.all_sunk():
-                self.player2.games_won += 1
-                self.print_game(self.player2)
-            if self.player2.sea.all_sunk():
-                self.player1.games_won += 1
-                self.print_game(self.player1)
+                while not self.player1.sea.all_sunk() and not self.player2.sea.all_sunk():
+                    player = self.next_player()
+                    other_player = self.player_turn
+                    shot = player.take_shot(other_player.sea.present_to_player(), other_player.sea.ship_lengths_remaining())
+
+                    try:
+                        other_player.sea.take_shot(shot)
+                    except ValidationError as e:
+                        error = e.message
+                        break
+
+                    self.print_game()
+                    sleep(0.1)
+
+                if self.player1.sea.all_sunk() or (player == self.player1 and error):
+                    self.player2.games_won += 1
+                    self.print_game(self.player2, error)
+                if self.player2.sea.all_sunk() or (player == self.player2 and error):
+                    self.player1.games_won += 1
+                    self.print_game(self.player1, error)
 
             if i < 4:
                 sleep(2)

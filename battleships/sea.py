@@ -9,10 +9,15 @@ class Sea(object):
     sunk_char = colored(u'╳', 'green')
     miss_char = colored(u'*', 'red')
 
-    def __init__(self, ship_placements):
+    @classmethod
+    def blank(self):
+        return Sea([], True)
+
+    def __init__(self, ship_placements, blank=False):
         self.grid = [[self.__class__.sea_char for x in range(10)] for y in range(10)]
         self.ships = []
-        self.parse_ship_placements(ship_placements)
+        if not blank:
+            self.parse_ship_placements(ship_placements)
         self.ships = sorted(self.ships, key=lambda x: -len(x.squares))
 
     def ship_lengths_remaining(self):
@@ -44,22 +49,22 @@ class Sea(object):
 
     def take_shot(self, shot):
         if shot[0] < 0 or shot[0] > 9 or shot[1] < 0 or shot[1] > 9:
-            raise ValidationError("Shot is outside the board: %s" % shot)
+            raise ValidationError("Shot is outside the board: (%s, %s)" % shot)
 
         if self.grid[shot[1]][shot[0]] == self.__class__.ship_char:
             self.grid[shot[1]][shot[0]] = self.__class__.sunk_char
         elif self.grid[shot[1]][shot[0]] == self.__class__.sea_char:
             self.grid[shot[1]][shot[0]] = self.__class__.miss_char
 
-
     def print_sea(self):
         for i, row in enumerate(self.grid):
             for square in row:
                 print ' ' + square,
 
-            ship = self.ships[i]
-            remaining = self.remaining_squares(ship)
-            print "\t" + "%s " % self.__class__.ship_char*remaining,
+            if i < len(self.ships):
+                ship = self.ships[i]
+                remaining = self.remaining_squares(ship)
+                print "\t" + "%s " % self.__class__.ship_char*remaining,
 
             print ' '
 
@@ -100,7 +105,7 @@ class Sea(object):
             length, x, y, orientation = placement
 
             if length == 4 and battleships > 0:
-                raise ValidationError("You can only have 1 battleship (length 5)")
+                raise ValidationError("You can only have 1 battleship (length 4)")
             elif length == 3 and cruisers > 1:
                 raise ValidationError("You can only have 2 cruisers (length 3)")
             elif length == 2 and destroyers > 2:
@@ -126,4 +131,12 @@ class Sea(object):
 
                 self.grid[y][x] = self.__class__.ship_char
 
+            if length == 4:
+                battleships += 1
+            elif length == 3:
+                cruisers += 1
+            elif length == 2:
+                destroyers += 1
+            elif length == 1:
+                submarines += 1
             self.ships.append(Ship(squares))

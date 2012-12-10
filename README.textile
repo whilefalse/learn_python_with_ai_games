@@ -62,3 +62,7 @@ h4. take_shot(board, ships)
 - The values in "board" are either '?' for an unknown square, 'x' for a hit, or 'o' for a miss.
 - ships is an array of integers, specifying which of your opponents ships are still left e.g. [4,2,1,1] means your opponent has one 4 length ship, one 2 length ship and 2 one length ships left. Even if the ships are hit, if they are not completely sunk they will appear in this array.
 - The method should return an array of the form [x,y], which are the co-ordinates of your next move.
+
+IMPORTANT!: Note that in battleships, 5 games will be played, but only ONE instance of your class will be
+used for all games. Therefore, if you need to do initialisation before each game, you should do it
+inside the @place_ships@ method.
