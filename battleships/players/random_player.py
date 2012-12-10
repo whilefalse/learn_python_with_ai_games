@@ -2,7 +2,7 @@ import random
 
 class Player(object):
     def __init__(self):
-        self.name = 'Stupid Player'
+        self.name = 'Random Player'
 
     def place_ships(self):
         return [
